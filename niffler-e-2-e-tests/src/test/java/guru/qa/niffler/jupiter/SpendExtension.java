@@ -38,7 +38,7 @@ public class SpendExtension implements BeforeEachCallback {
                 GenerateCategory.class
         );
 
-        if (spend.isPresent()) {
+        if (spend.isPresent() && category.isPresent()) {
             GenerateSpend spendData = spend.get();
             GenerateCategory categoryData = category.get();
 
