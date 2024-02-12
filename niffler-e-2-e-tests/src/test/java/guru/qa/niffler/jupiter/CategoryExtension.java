@@ -1,7 +1,7 @@
 package guru.qa.niffler.jupiter;
 
-import guru.qa.niffler.api.SpendApi;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.api.CategoryApi;
+import guru.qa.niffler.model.CategoryJson;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -9,13 +9,12 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.util.Date;
 import java.util.Optional;
 
-public class SpendExtension implements BeforeEachCallback {
+public class CategoryExtension implements BeforeEachCallback {
 
-    public static final ExtensionContext.Namespace NAMESPACE_SPEND
-            = ExtensionContext.Namespace.create(SpendExtension.class);
+    public static final ExtensionContext.Namespace NAMESPACE_CATEGORY
+            = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder().build();
     private static final Retrofit retrofit = new Retrofit.Builder()
@@ -24,37 +23,26 @@ public class SpendExtension implements BeforeEachCallback {
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
 
-    private final SpendApi spendApi = retrofit.create(SpendApi.class);
+    private final CategoryApi categoryApi = retrofit.create(CategoryApi.class);
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        Optional<GenerateSpend> spend = AnnotationSupport.findAnnotation(
-                extensionContext.getRequiredTestMethod(),
-                GenerateSpend.class
-        );
-
         Optional<GenerateCategory> category = AnnotationSupport.findAnnotation(
                 extensionContext.getRequiredTestMethod(),
                 GenerateCategory.class
         );
 
-        if (spend.isPresent() && category.isPresent()) {
-            GenerateSpend spendData = spend.get();
+        if (category.isPresent()) {
             GenerateCategory categoryData = category.get();
-
-            SpendJson spendJson = new SpendJson(
+            CategoryJson categoryJson = new CategoryJson(
                     null,
-                    new Date(),
                     categoryData.category(),
-                    spendData.currency(),
-                    spendData.amount(),
-                    spendData.description(),
-                    spendData.username()
+                    categoryData.username()
             );
 
-            SpendJson created = spendApi.addSpend(spendJson).execute().body();
-            extensionContext.getStore(NAMESPACE_SPEND)
-                    .put("spend", created);
+            CategoryJson created = categoryApi.addCategory(categoryJson).execute().body();
+            extensionContext.getStore(NAMESPACE_CATEGORY)
+                    .put("category", created);
         }
     }
 }
