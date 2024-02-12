@@ -22,7 +22,7 @@ public class WelcomePage {
 
     @Step("Click to 'Login' button")
     public LoginPage clickLoginButton() {
-        loginBtn.should(visible).click();
+        loginBtn.click();
         return new LoginPage();
     }
 }

@@ -14,7 +14,7 @@ public class MainPage {
 
     HistoryOfSpendingsTable historyOfSpendingsTable = new HistoryOfSpendingsTable();
 
-    SelenideElement
+    private final SelenideElement
             deleteSelectedBtn = $$("button[type = 'button']").findBy(Condition.text("Delete selected"));
 
     @Step("Check that page loaded")
